@@ -2,15 +2,65 @@
 A library for safe pointers, similar to smart pointers. Created for educationalpurposes
 
 # Roadmap/ToDO
-- Finish documentation
 - Create a proper test suite (using GTest)
-- Implement a move command for the `SafePtr` class
 - Implement functionality simmilar to shared pointers
 - Replace the use of  `new` and `delete` with a custom allocater.
 
 # API:
 ## The `SafePtr` Class:
 A dynamically allocated pointer of a user-specified type. Manages its own memory and automatically frees it once needed.
+### Public Methods:
+#### SafePtr<T>():
+- Parameters:
+  - None
+- Return type: `SafePtr<T>`
+- Notes: The default constructor for this class.
+#### get_raw():
+- Parameters:
+     - None
+- Return type: `T*`
+- Returns: The raw pointer for this object
+#### get():
+- Parameters:
+   - None
+- Return type: `T`
+- Returns: The value this object points to
+- Notes:
+  - A mutable reference to this value be accessed with the `*` operator.
+  - Throws a `std::runtime_error` if the pointer is uninitialized
+#### size():
+- Parameters:
+   - None
+- Return type: `int`
+- Returns: The size of this pointer in bytes.
+#### set(const T& val):
+- Parameters
+  - `const T& value`: The value to set this pointer to.
+- Returns: `void`
+- Description: Sets the value of the pointer to the provide value.
+#### reset():
+- Parameters:
+     - None
+- Returns: `void`
+- Description: Sets this pointer to null, and resets all member variables
+#### copy():
+- Parameters:
+  - None
+- Return Type: `SafePtr<T>`
+- Returns: The copy of this object.
+- Description: Creates a shallow copy of this pointer, and does not modify this object.
+- Notes:
+  - Intended use case is using this method to pass the pointer to a function
+  - A copy of a SafePtr does not automatically free it's memory once it goes out of scope. If you desire to free the memory from a copy, you must explicitly call `reset` on the copied object.
+#### move():
+- Parameters:
+  - None
+- Return Type: `SafePtr<T>`
+- Returns: A clone of this object.
+- Description: Creates a shallow copy of this pointer, and sets the pointer on this object to `null`
+- Notes:
+  - Unlike the `copy` method, the returned object will free its own memory once it goes out of scope.
+  - The above does not apply if the caller is, itself a copy.
 ### Example:
 #### Code:
 ```
@@ -30,9 +80,6 @@ int main(){
 ```
 #### stdout:
 `Value: 64`
-### Notes:
-Copied safe pointers are shallow copies.<br>
-Copied safe pointers do not automatically delete their allocated memory, if you desire to free the memory from a copy, you must explicitly call the `reset` method on the copy.
 ## The `SafeArr` Class:
 A dynamically allocated array of a user specified type. As with the `SafePtr` class, this manages its own memory.
 ### Example:
@@ -40,7 +87,6 @@ A dynamically allocated array of a user specified type. As with the `SafePtr` cl
 ```
 #include <iostream>
 #include "safe_ptr.hpp"
-
 using std::string;
 
 int main(){
