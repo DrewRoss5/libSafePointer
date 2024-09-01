@@ -17,21 +17,22 @@ A dynamically allocated pointer of a user-specified type. Manages its own memory
 #include <iostream>
 #include "safe_ptr.hpp"
 
-void double_val(SafePtr<int>& ptr){
+void double_val(SafePtr<int> ptr){
     *ptr *= 2;
 }
 
 int main(){
     SafePtr<int> ptr;
     ptr.set(32);
-    double_val(ptr);
+    double_val(ptr.copy());
     std::cout << "Value: " << ptr.get() << std::endl;
 }
 ```
 #### stdout:
-`Value: 42`
+`Value: 64`
 ### Notes:
-Any memory allocated to this pointer will be freed once the pointer goes out of scope. For the moment, there isn't a work around, however, `move` and `copy` functions will be available soon.
+Copied safe pointers are shallow copies.<br>
+Copied safe pointers do not automatically delete their allocated memory, if you desire to free the memory from a copy, you must explicitly call the `reset` method on the copy.
 ## The `SafeArr` Class:
 A dynamically allocated array of a user specified type. As with the `SafePtr` class, this manages its own memory.
 ### Example:
@@ -61,4 +62,4 @@ Hello
 World
 ```
 ### Notes:
-For the moment, as with the `SafePtr` class, this will deallocate its memory once it goes out of scope. 
+Same caveats as the copy method for the `SafePtr` class apply
