@@ -3,17 +3,21 @@ project(LibSafePointer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
+# configure the library
 add_library(SafePointer STATIC
     src/safe_ptr.hpp
 )
-
 set_target_properties(SafePointer PROPERTIES LINKER_LANGUAGE CXX)
 
-target_include_directories(SafePointer PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+# configure the tests
+find_package(GTest)
+include(GoogleTest)
+add_executable(tests 
+    test/main_test.cpp 
+    src/safe_ptr.hpp
 )
+target_link_libraries(tests PRIVATE GTest::gtest)
+
 
 # uncomment this to build a demo executable
 #add_executable(demo src/main.cpp )
