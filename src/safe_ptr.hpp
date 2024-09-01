@@ -220,5 +220,6 @@ SafeArr<T> SafeArr<T>::move(){
     this->length_ = 0;
     this->size_ = 0;
     this->ptr_ = nullptr;
+    this->is_initialized_ = false;
     return new_arr;   
 }
