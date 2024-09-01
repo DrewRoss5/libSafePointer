@@ -3,7 +3,6 @@
 #include <stdexcept>
 
 template <typename T>
-
 class SafePtr{
     private:
         T*   ptr_ {nullptr};
@@ -27,6 +26,7 @@ class SafePtr{
         // other functions
         void reset();
         SafePtr<T> copy();
+        SafePtr<T> move();
 };
 
 // simple constructor
@@ -102,6 +102,16 @@ SafePtr<T> SafePtr<T>::copy(){
     return new_ptr;
 }
 
+// creates a non-copy clone of this pointer, and sets this pointer to null
+template <typename T>
+SafePtr<T> SafePtr<T>::move(){
+    SafePtr<T> new_ptr = *this;
+    // clear this pointer
+    this->is_initialized_ = false;
+    this->ptr_ = nullptr;
+    return new_ptr;
+}
+
 // a class to automatically handle memory for array style pointers
 template <typename T>
 class SafeArr{
@@ -126,6 +136,7 @@ class SafeArr{
         void set(const int index, T val);
         void reset(const int n);
         SafeArr<T> copy();
+        SafeArr<T> move();
 };  
 
 // simple constructor, creates an array with room for n elements
@@ -199,4 +210,15 @@ SafeArr<T> SafeArr<T>::copy(){
     new_arr.ptr_ = this->ptr_;
     new_arr.is_copy_ = true;
     return new_arr;
+}
+
+// creates a non-copy clone of this pointer, and sets this pointer to null
+template <typename T>
+SafeArr<T> SafeArr<T>::move(){
+    SafeArr<T> new_arr = *this;
+    // reset this array
+    this->length_ = 0;
+    this->size_ = 0;
+    this->ptr_ = nullptr;
+    return new_arr;   
 }
