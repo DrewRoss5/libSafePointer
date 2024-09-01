@@ -9,6 +9,7 @@ class SafePtr{
         T*   ptr_ {nullptr};
         int  size_ {0}; 
         bool is_initialized_ {false};
+        bool is_copy_ {false};
         void free_mem();
     public:
         SafePtr();
@@ -25,6 +26,7 @@ class SafePtr{
         void set(const T tmp);
         // other functions
         void reset();
+        SafePtr<T> copy();
 };
 
 // simple constructor
@@ -37,7 +39,8 @@ SafePtr<T>::SafePtr(){
 // simple destructor
 template <typename T>
 SafePtr<T>::~SafePtr(){
-    this->free_mem();
+    if (!this->is_copy_)
+        this->free_mem();
 }
 
 // equality opperator for the raw type 
@@ -70,7 +73,7 @@ T SafePtr<T>::get() const{
 // sets the value of the pointer
 template <typename T>
 void SafePtr<T>::set(T val){
-    this->is_initialized = true;
+    this->is_initialized_ = true;
     *(this->ptr_) = val;
 }
 
@@ -89,6 +92,16 @@ void SafePtr<T>::free_mem(){
     this->ptr_ = nullptr;
 }
 
+// returns a copy of this pointer, pointing to the same memory address 
+template <typename T>
+SafePtr<T> SafePtr<T>::copy(){
+    SafePtr<T> new_ptr;
+    new_ptr.ptr_ = this->ptr_;
+    new_ptr.is_initialized_ = this->is_initialized_;
+    new_ptr.is_copy_ = true;
+    return new_ptr;
+}
+
 // a class to automatically handle memory for array style pointers
 template <typename T>
 class SafeArr{
@@ -96,7 +109,8 @@ class SafeArr{
         T* ptr_ {nullptr};
         int size_ {0};
         int length_ {0};
-        bool is_initialized_{false};
+        bool is_initialized_ {false};
+        bool is_copy_ {false};
         void free_mem();
     public:
         SafeArr(const int n);
@@ -111,6 +125,7 @@ class SafeArr{
         // other functions
         void set(const int index, T val);
         void reset(const int n);
+        SafeArr<T> copy();
 };  
 
 // simple constructor, creates an array with room for n elements
@@ -126,7 +141,8 @@ SafeArr<T>::SafeArr(const int n){
 // simple destructor
 template <typename T>
 SafeArr<T>::~SafeArr(){
-    free_mem();
+    if (!this->is_copy_)
+        free_mem();
 }
 
 // sets the value of a single element in the array, and marks the array as initialized
@@ -173,4 +189,14 @@ void SafeArr<T>::reset(const int n){
     this->ptr_ = new T[n];
     this->size_ = sizeof(T) * n;
     this->length_ = n;
+}
+
+// returns a copy of this pointer, pointing to the same memory address 
+template <typename T>
+SafeArr<T> SafeArr<T>::copy(){
+    SafeArr<T> new_arr(this->length_);
+    new_arr.is_initialized_ = this->is_initialized_;
+    new_arr.ptr_ = this->ptr_;
+    new_arr.is_copy_ = true;
+    return new_arr;
 }
