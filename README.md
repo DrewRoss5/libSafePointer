@@ -3,8 +3,8 @@ A library for safe pointers, similar to smart pointers. Created for educationalp
 
 # Roadmap/ToDO
 - Create a proper test suite (using GTest)
-- Implement functionality simmilar to shared pointers
 - Replace the use of  `new` and `delete` with a custom allocater.
+- Expand SafePtr functionality. 
 
 # API:
 ## The `SafePtr` Class:
