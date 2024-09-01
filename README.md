@@ -51,7 +51,7 @@ A dynamically allocated pointer of a user-specified type. Manages its own memory
 - Description: Creates a shallow copy of this pointer, and does not modify this object.
 - Notes:
   - Intended use case is using this method to pass the pointer to a function
-  - A copy of a SafePtr does not automatically free it's memory once it goes out of scope. If you desire to free the memory from a copy, you must explicitly call `reset` on the copied object.
+  - A copy of a SafePtr does not automatically free it's memory once it goes out of scope. If you desire to free the memory from a copy, you must explicitly call `reset` on the copied object. Though, doing so is generally inadvisable, as it may cause undefined behavior when the original smart pointer is deconstructed.
 #### move():
 - Parameters:
   - None
@@ -60,7 +60,7 @@ A dynamically allocated pointer of a user-specified type. Manages its own memory
 - Description: Creates a shallow copy of this pointer, and sets the pointer on this object to `null`
 - Notes:
   - Unlike the `copy` method, the returned object will free its own memory once it goes out of scope.
-  - The above does not apply if the caller is, itself a copy.
+  - The above does not apply if the caller is, itself, a copy.
 ### Example:
 #### Code:
 ```
