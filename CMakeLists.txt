@@ -17,7 +17,3 @@ add_executable(tests
     src/safe_ptr.hpp
 )
 target_link_libraries(tests PRIVATE GTest::gtest)
-
-
-# uncomment this to build a demo executable
-#add_executable(demo src/main.cpp )
