@@ -2,6 +2,14 @@
 #include <gtest/gtest.h>
 #include "../src/safe_ptr.hpp"
 
+template <typename T>
+bool is_null_ptr(T* ptr){
+    if (ptr)
+        return false;
+    else
+        return true;
+}   
+
 /***************************  
  TESTS FOR THE SafePtr CLASS
 ****************************/
@@ -16,7 +24,7 @@ TEST(SafePtrTests, BasicTests){
 
 // test the copying functionality of the SafePtr class
 TEST(SafePtrTests, CopyTests){
-    SafePtr<int> ptr;
+    SafePtr<int>  ptr;
     SafePtr<int> ptr2 = ptr.copy();
     *ptr = 42;
     EXPECT_EQ(*ptr2, 42);
@@ -32,10 +40,17 @@ TEST(SafePtrTests, MoveTests){
     SafePtr<int> ptr2 = ptr.move();
     EXPECT_EQ(*ptr2, 123);
     // ensure that ptr was emptied correctly 
-    bool is_nullptr = true;
-    if (ptr.get_raw())
-        is_nullptr = false;
-    EXPECT_TRUE(is_nullptr);
+    EXPECT_TRUE(is_null_ptr(ptr.get_raw()));
+}
+
+// test that the transfer function works as expected
+TEST(SafePtrTests, TransferTests){
+    SafePtr<float> ptr;
+    SafePtr<float> ptr2;
+    ptr.set(123.45);
+    ptr.transfer(ptr2);
+    EXPECT_NEAR(*ptr2, 123.45, 3);
+    EXPECT_TRUE(is_null_ptr(ptr.get_raw()));
 }
 
 // test that exceptions are thrown when an unitialized pointer is accessed
@@ -85,11 +100,7 @@ TEST(SafeArrTests, MoveTests){
     // ensure the data was transfered successfully
     for (int i = 0; i < 5; i++)
         EXPECT_EQ(moved[i], 5 - i);
-    // ensure the pointer was nulles successfully
-    bool is_nullptr = true;
-    if (arr.get_raw())
-        is_nullptr = false;
-    EXPECT_TRUE(is_nullptr);
+    EXPECT_TRUE(is_null_ptr(arr.get_raw()));
 }
 
 // ensure exceptions are raised as appropriate
@@ -120,3 +131,4 @@ int main(int argc, char** argv){
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+

@@ -28,6 +28,7 @@ class SafePtr{
         void reset();
         SafePtr<T> copy();
         SafePtr<T> move();
+        void transfer(SafePtr<T>& new_arr);
 };
 
 // simple constructor
@@ -113,6 +114,23 @@ SafePtr<T> SafePtr<T>::move(){
     return new_ptr;
 }
 
+// transfers the ownership of this pointer to another a pointer
+template <typename T>
+void SafePtr<T>::transfer(SafePtr<T>& new_ptr){
+    // delete the exisiting memory of new_ptr, if it owns the memory, and transfer the pointer
+    if (new_ptr.is_initialized_ && !new_ptr.is_copy_)
+        new_ptr.reset();
+    else{
+        new_ptr.is_copy_ = false;
+        new_ptr.is_initialized_ = this->is_initialized_;
+    }
+    new_ptr.ptr_ = this->ptr_;
+    // clean up this object
+    this->ptr_ = nullptr;
+    this->is_initialized_ = false;
+    this->is_copy_ = false;
+}
+
 // a class to automatically handle memory for array style pointers
 template <typename T>
 class SafeArr{
@@ -139,6 +157,7 @@ class SafeArr{
         void reset(const int n);
         SafeArr<T> copy();
         SafeArr<T> move();
+        void transfer(SafeArr<T>& new_arr);
 };  
 
 // simple constructor, creates an array with room for n elements
