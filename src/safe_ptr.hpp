@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 template <typename T>
+
 class SafePtr{
     private:
         T*   ptr_ {nullptr};
@@ -127,6 +128,7 @@ class SafeArr{
         ~SafeArr();
         // getters
         T get(const int index);
+        T* get_raw() {return this->ptr_;};
         int size() const {return this->size_;}
         int length() const {return this->length_;}
         bool is_initialized() const {return this->is_initialized_;}
@@ -220,6 +222,5 @@ SafeArr<T> SafeArr<T>::move(){
     this->length_ = 0;
     this->size_ = 0;
     this->ptr_ = nullptr;
-    this->is_initialized_ = false;
     return new_arr;   
 }
