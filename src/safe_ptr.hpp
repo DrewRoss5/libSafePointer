@@ -42,7 +42,7 @@ SafePtr<T>::SafePtr(){
 template <typename T>
 SafePtr<T>::~SafePtr(){
     if (!this->is_copy_)
-        this->free_mem();
+        delete this->ptr_;
 }
 
 // equality opperator for the raw type 
@@ -107,10 +107,8 @@ SafePtr<T> SafePtr<T>::copy(){
 // creates a non-copy clone of this pointer, and sets this pointer to null
 template <typename T>
 SafePtr<T> SafePtr<T>::move(){
-    SafePtr<T> new_ptr = *this;
-    // clear this pointer
-    this->is_initialized_ = false;
-    this->ptr_ = nullptr;
+    SafePtr<T> new_ptr;
+    this->transfer(new_ptr);
     return new_ptr;
 }
 
@@ -120,10 +118,8 @@ void SafePtr<T>::transfer(SafePtr<T>& new_ptr){
     // delete the exisiting memory of new_ptr, if it owns the memory, and transfer the pointer
     if (new_ptr.is_initialized_ && !new_ptr.is_copy_)
         new_ptr.reset();
-    else{
-        new_ptr.is_copy_ = false;
-        new_ptr.is_initialized_ = this->is_initialized_;
-    }
+    new_ptr.is_copy_ = this->is_copy_;
+    new_ptr.is_initialized_ = this->is_initialized_;
     new_ptr.ptr_ = this->ptr_;
     // clean up this object
     this->ptr_ = nullptr;
@@ -174,7 +170,7 @@ SafeArr<T>::SafeArr(const int n){
 template <typename T>
 SafeArr<T>::~SafeArr(){
     if (!this->is_copy_)
-        free_mem();
+        delete[] this->ptr_;
 }
 
 // sets the value of a single element in the array, and marks the array as initialized
@@ -218,9 +214,10 @@ void SafeArr<T>::reset(const int n){
     free_mem();
     if (n < 0)
         throw std::invalid_argument("Invalid array size");
-    this->ptr_ = new T[n];
+    this->ptr_ = nullptr;
     this->size_ = sizeof(T) * n;
     this->length_ = n;
+    this->is_copy_ = false;
 }
 
 // returns a copy of this pointer, pointing to the same memory address 
@@ -236,10 +233,23 @@ SafeArr<T> SafeArr<T>::copy(){
 // creates a non-copy clone of this pointer, and sets this pointer to null
 template <typename T>
 SafeArr<T> SafeArr<T>::move(){
-    SafeArr<T> new_arr = *this;
-    // reset this array
-    this->length_ = 0;
-    this->size_ = 0;
+    SafeArr<T> new_arr(this->length_);
+    this->transfer(new_arr);
+    return new_arr;
+}
+
+// transfers the memory of this SafeArr to another
+template <typename T>
+void SafeArr<T>::transfer(SafeArr<T>& new_arr){
+    // transfer the memory
+    if (new_arr.is_initialized_ && !new_arr.is_copy_)
+        new_arr.reset(this->length_);
+    new_arr.is_copy_ = this->is_copy_;
+    new_arr.is_initialized_ = this->is_initialized_;
+    new_arr.ptr_ = this->ptr_;
+    // clean up this object
     this->ptr_ = nullptr;
-    return new_arr;   
+    this->is_copy_ = false;
+    this->is_initialized_ = false;
+    this->size_ = 0;
 }
