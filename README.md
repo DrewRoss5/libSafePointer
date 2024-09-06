@@ -60,6 +60,11 @@ A dynamically allocated pointer of a user-specified type. Manages its own memory
 - Notes:
   - Unlike the `copy` method, the returned object will free its own memory once it goes out of scope.
   - The above does not apply if the caller is, itself, a copy.
+#### transfer(SafePtr<T>& new_ptr)
+- Parameters:
+  - `SafePtr<T>& new_ptr`: The pointer to transfer this object's memory to.
+- Returns: `void`
+- Description: Copies the pointer of this object to `new_ptr`, and overwrites this object's pointer. In essence, this replaces this object with `new_ptr` 
 ### Example:
 #### Code:
 ```
