@@ -15,7 +15,7 @@ class SafePtr{
         SafePtr();
         ~SafePtr();
         // operators
-        bool operator==(const T val);
+        bool operator==(const T& val);
         bool operator==(const SafePtr<T>& val);
         T& operator*();
         // getters (defined here for conciseness)
@@ -23,7 +23,7 @@ class SafePtr{
         T get() const ;
         int size() const {return this->size_;}
         // setter prototytpes
-        void set(const T tmp);
+        void set(const T& tmp);
         // other functions
         void reset();
         SafePtr<T> copy();
@@ -47,7 +47,7 @@ SafePtr<T>::~SafePtr(){
 
 // equality opperator for the raw type 
 template <typename T> 
-bool SafePtr<T>::operator==(const T val){
+bool SafePtr<T>::operator==(const T& val){
     return *(this->ptr_) == val;
 }
 
@@ -74,7 +74,7 @@ T SafePtr<T>::get() const{
 
 // sets the value of the pointer
 template <typename T>
-void SafePtr<T>::set(T val){
+void SafePtr<T>::set(const T& val){
     this->is_initialized_ = true;
     *(this->ptr_) = val;
 }
@@ -141,16 +141,16 @@ class SafeArr{
         SafeArr(const int n);
         ~SafeArr();
         // getters
-        T get(const int index);
+        T get(const unsigned int index);
         T* get_raw() {return this->ptr_;};
         int size() const {return this->size_;}
         int length() const {return this->length_;}
         bool is_initialized() const {return this->is_initialized_;}
-        // operator
-        T operator[](const int index);
+        // operators
+        T operator[](const unsigned int index);
         // other functions
-        void set(const int index, T val);
-        void reset(const int n);
+        void set(const unsigned int index, T& val);
+        void reset(const unsigned int n);
         SafeArr<T> copy();
         SafeArr<T> move();
         void transfer(SafeArr<T>& new_arr);
@@ -175,7 +175,7 @@ SafeArr<T>::~SafeArr(){
 
 // sets the value of a single element in the array, and marks the array as initialized
 template <typename T>
-void SafeArr<T>::set(const int index, T val){
+void SafeArr<T>::set(const unsigned int index, T& val){
     if (index < 0 || index > this->length_)
         throw std::out_of_range("Invalid index");
     this->is_initialized_ = true;
@@ -184,7 +184,7 @@ void SafeArr<T>::set(const int index, T val){
 
 // returns the value at the given index, throwing an exception if the index is out of bounds, or if the array is unitialized
 template <typename T>
-T SafeArr<T>::get(const int index){
+T SafeArr<T>::get(const unsigned  int index){
     if (!this->is_initialized_)
         throw std::runtime_error("Cannot retrieve value from an unitialized array");
     if (index < 0 || index > this->length_)
@@ -194,7 +194,7 @@ T SafeArr<T>::get(const int index){
 
 // operator for the get method
 template <typename T>
-T SafeArr<T>::operator[](const int index){
+T SafeArr<T>::operator[](const unsigned int index){
     return get(index);
 }
 
@@ -210,7 +210,7 @@ void SafeArr<T>::free_mem(){
 
 // resets the array, and reallocates it with a new size
 template <typename T>
-void SafeArr<T>::reset(const int n){
+void SafeArr<T>::reset(const unsigned int n){
     free_mem();
     if (n < 0)
         throw std::invalid_argument("Invalid array size");
