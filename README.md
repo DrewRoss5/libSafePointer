@@ -84,8 +84,54 @@ int main(){
 ```
 #### stdout:
 `Value: 64`
+
 ## The `SafeArr` Class:
-A dynamically allocated array of a user specified type. As with the `SafePtr` class, this manages its own memory.
+A dynamically allocated array of a user specified type and size. As with the `SafePtr` class, this manages its own memory.
+### Public Methods:
+#### SafeArr<T>(unsigned int n):
+- Parameters:
+   - `unsigned int n`: The size (in elements) of the array to be allocated
+- Return Type: `SafeArr<T>`
+#### get(unsigned int index):
+- Parameters: 
+  - `unsigned int index`: the index in the array to get
+- Return type: `T`
+- Returns: The element at `index` if present.
+- Notes:
+  - Throws an exception if the array hasn't been initialized, or if the index is out of range
+  - Can also be accessed using bracket opperators (ex: `myarr[0]`)
+#### size():
+- Parameters:
+  - None
+- Return type: `int`
+- Returns: The size of the array in bytes
+#### length():
+- Parameters:
+  - None
+- Return type: `int`
+- Returns: The number of elements in the array
+#### is_initalized():
+- Parameters:
+  - None
+- Return type: `bool`
+- Returns: `true` if the array is initialized, otherwise returns `false`
+#### set(unsigned int index, T val):
+- Parameters:
+  - `unsigned int index`: the index in the array to set the value of
+  - `T val`: the value to be set
+- Returns: `void`
+- Description: Sets the value at `index` to `T`. Throws an exception if the array hasn't been initialized, or if the index is out of range.
+#### reset(unsigned int n):
+- Parameters:
+  - `unsigned int n`: The size to reallocate the array to
+- Returns: `void`
+- Description: Frees the memory associated with the array and reallocates the array for a size of `n` elements.
+#### copy():
+  See `copy` method of the `SafePtr` class
+#### move():
+  See `move` method of the `SafePtr` class
+#### transfer():
+  See `transfer` method of the `SafePtr` class
 ### Example:
 #### Code:
 ```
