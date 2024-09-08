@@ -1,10 +1,6 @@
 # libSafePointer
 A library for safe pointers, similar to smart pointers. Created for educationalpurposes
 
-# Roadmap/ToDo
-- Replace the use of  `new` and `delete` with a custom memory-pool-based allocater.
-- Expand SafePtr functionality. 
-
 # API:
 ## The `SafePtr` Class:
 A dynamically allocated pointer of a user-specified type. Manages its own memory and automatically frees it once needed.
